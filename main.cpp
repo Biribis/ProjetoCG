@@ -7,7 +7,9 @@ GLfloat angle, fAspect;
 
 void Crystal() {
 
-	glColor3ub(185, 99, 235);
+	//superior
+
+	glColor3ub(201, 60, 166);
 
 	glBegin(GL_POLYGON);//trapezio meio esquerdo
 	glVertex2f(0, 6);
@@ -17,7 +19,7 @@ void Crystal() {
 	glEnd();
 
 
-	glColor3ub(185, 99, 0);
+	glColor3ub(227, 66, 187);
 
 	glBegin(GL_POLYGON);//trapezio meio direito
 	glVertex2f(0, 6);
@@ -27,7 +29,7 @@ void Crystal() {
 	glEnd();
 
 
-	glColor3ub(185, 0, 235);
+	glColor3ub(168, 50, 139);
 
 	glBegin(GL_POLYGON);//trapezio exterior esquerdo
 	glVertex2f(-2, 6);
@@ -37,13 +39,69 @@ void Crystal() {
 	glEnd();
 
 
-	glColor3ub(0, 99, 235);
+	glColor3ub(242, 75, 201);
 
 	glBegin(GL_POLYGON);//trapezio exterior direito
 	glVertex2f(2, 6);
 	glVertex2f(3, 6);
 	glVertex2f(1.4, 8);
 	glVertex2f(1.1, 7.7);
+	glEnd();
+
+	//inferior
+
+	glColor3ub(168, 50, 139);
+
+	glBegin(GL_POLYGON);//trapezio meio esquerdo
+	glVertex2f(0, 6);
+	glVertex2f(-2, 6);
+	glVertex2f(-0.7, 4.2);
+	glVertex2f(0, 4.2);
+	glEnd();
+
+
+	glColor3ub(201, 60, 166);
+
+	glBegin(GL_POLYGON);//trapezio meio direito
+	glVertex2f(0, 6);
+	glVertex2f(2, 6);
+	glVertex2f(0.7, 4.2);
+	glVertex2f(0, 4.2);
+	glEnd();
+
+
+	glColor3ub(140, 28, 113);
+
+	glBegin(GL_POLYGON);//trapezio exterior esquerdo
+	glVertex2f(-2, 6);
+	glVertex2f(-3, 6);
+	glVertex2f(-1, 4.2);
+	glVertex2f(0, 4.2);
+	glEnd();
+
+
+	glColor3ub(227, 66, 187);
+
+	glBegin(GL_POLYGON);//trapezio exterior direito
+	glVertex2f(2, 6);
+	glVertex2f(3, 6);
+	glVertex2f(1, 4.2);
+	glVertex2f(0, 4.2);
+	glEnd();
+
+	//topo
+
+	glColor3ub(227, 66, 187);
+
+	glBegin(GL_POLYGON);
+	glVertex2f(-0.8, 8.8);
+	glVertex2f(-0.7, 8.5);
+	glVertex2f(0, 8);
+	glVertex2f(1.1, 7.7);
+	glVertex2f(1.4, 8);
+	glVertex2f(0.7, 8.5);
+	glVertex2f(0, 8.8);
+	
 	glEnd();
 }
 

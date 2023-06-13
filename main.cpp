@@ -1,9 +1,211 @@
+#include <stdio.h>
 #include <glut.h>
 #include <math.h>
+#define CTRL_COUNT 100
 # define M_PI 3.14159265358979323846
 
+/*
+int ctrlPointsCount;
+double ctrlPointsX[CTRL_COUNT], ctrlPointsY[CTRL_COUNT];
+double X1[3] = { 0.26015037593985, 0.43609022556391, 0.6 }, Y1[3] = { 0.946875, 0.884375, 0.946875 };
+*/
 
 GLfloat angle, fAspect;
+
+/*
+
+//Função pra curvas de bezier
+float getNextBezierPointX(float t)
+{
+	float x = 0.0;
+
+	for (int i = 0; i < ctrlPointsCount; i++)
+	{
+		int c;
+		if (i == 0 || i == ctrlPointsCount - 1)
+			c = 1;
+		else
+		{
+			c = ctrlPointsCount - 1;
+		}
+		x += c * pow(t, i) * pow(1 - t, ctrlPointsCount - 1 - i) * ctrlPointsX[i];
+	}
+	return x;
+}
+float getNextBezierPointY(float t)
+{
+	float y = 0.0;
+
+	for (int i = 0; i < ctrlPointsCount; i++)
+	{
+		int c;
+		if (i == 0 || i == ctrlPointsCount - 1)
+			c = 1;
+		else
+		{
+			c = ctrlPointsCount - 1;
+		}
+		y += c * pow(t, i) * pow(1 - t, ctrlPointsCount - 1 - i) * ctrlPointsY[i];
+	}
+
+
+
+	return y;
+}
+
+//Desenha Curva de Bezier
+void drawline()
+{
+	// draw control points using red color
+	for (int i = 0; i < 3; i++)
+	{
+		glBegin(GL_POINTS);
+		glVertex2i(ctrlPointsX[i], ctrlPointsY[i]);
+		glEnd();
+		glFlush();
+	}
+	// draw bezier curve using control poitns by calculating next points using           cubic bezier curve formula
+	float oldX = ctrlPointsX[0], oldY = ctrlPointsY[0];
+	for (double t = 0.0; t <= 1.0; t += 0.01)
+	{
+		float x = getNextBezierPointX(t);
+		float y = getNextBezierPointY(t);
+		//glColor3f(1.0,t,1.0);
+		glColor3f(1.0, 1.0, 1.0);
+		glBegin(GL_LINES);
+		glVertex2f(oldX, oldY);
+		glVertex2f(x, y);
+		glEnd();
+		glFlush();
+		oldX = x;
+		oldY = y;
+	}
+}
+
+*/
+
+
+//Função auxiliar do Leonardo
+float grausParaRadianos(float angulo_graus) {
+	return (angulo_graus * 2 * M_PI) / 360.0;
+}
+void CirculoSimetrico(float raio, float x0, float y0,float z, int definicao) {
+	int i;
+	float passo = grausParaRadianos(360.0 / definicao);
+	float angulo = passo;
+	float x = 0.0, y = 0.0;
+
+	glBegin(GL_POLYGON);
+	for (i = 0; i < definicao; i++) {
+		x = raio * cos(angulo) + x0;
+		y = raio * sin(angulo) + y0;
+		glVertex3f(x, y,z);
+		angulo += passo;
+	}
+	glEnd();
+	glBegin(GL_POLYGON);
+	for (i = 0; i < definicao; i++) {
+		x = raio * cos(angulo) + x0;
+		y = raio * sin(angulo) + y0;
+		glVertex3f(-x, y, z);
+		angulo += passo;
+	}
+	glEnd();
+}
+
+//Rotação em progresso
+/*
+void MultiplyWithOutAMP() {
+	int aMatrix[3][1] = { {1, 4}, {2, 5}, {3, 6} };
+	int bMatrix[2][3] = { {7, 8, 9}, {10, 11, 12} };
+
+	for (int row = 0; row < 3; row++) {
+		for (int col = 0; col < 3; col++) {
+			// Multiply the row of A by the column of B to get the row, column of product.
+			for (int inner = 0; inner < 2; inner++) {
+				product[row][col] += aMatrix[row][inner] * bMatrix[inner][col];
+			}
+			std::cout << product[row][col] << "  ";
+		}
+		std::cout << "\n";
+	}
+}
+*/
+
+/*
+void Cria_Ranhura(float xi, float xf){
+	glBegin(GL_POLYGON);
+	float y = 0;
+	for (int i = 0; i < (xf - xi); i += 0.1) {
+		y = xi + i + (i / 2 * xi);
+		glVertex2f((xi+i), y);	
+	}
+	glEnd();
+
+}
+*/
+
+void Asa() {
+
+	glColor3ub(255,255,255);
+	glBegin(GL_POLYGON);
+	CirculoSimetrico(5, -2, 5.5,-1, 60);
+	glEnd();
+
+	//recorte de seções
+	glBegin(GL_POLYGON);
+	glColor3ub(0,0,0);
+	CirculoSimetrico(4.5, -3, 8.5,-.5, 60);
+	glEnd();
+	glBegin(GL_POLYGON);
+	CirculoSimetrico(2, 0, 4.5, -.5, 60);
+	glEnd();
+	glBegin(GL_POLYGON);
+	CirculoSimetrico(2, 0, 0, -.5, 60);
+	glEnd();
+}
+void Haste() {
+
+	//Encaixe Crystal
+	glBegin(GL_POLYGON);
+	//Duplas de Vertex e coloração para formar gradiente
+	glColor3ub(33, 18, 1);
+	glVertex2f(-1, 4.2);
+	glColor3ub(66, 36, 3);
+	glVertex2f(-1.2, 3.8);
+	glColor3ub(105, 57, 3);
+	glVertex2f(1.2, 3.8);
+	glColor3ub(94, 51, 3);
+	glVertex2f(1, 4.2);
+	glEnd();
+
+	glColor3ub(105, 57, 3);
+	//Trapezio Superior
+	glBegin(GL_POLYGON);
+	glColor3ub(66, 36, 3);
+	glVertex2f(-1.2, 3.8);
+	glColor3ub(66, 36, 3);
+	glVertex2f(-1, 0.5);
+	glColor3ub(105, 57, 3);
+	glVertex2f(1, 0.5);
+	glColor3ub(105, 57, 3);
+	glVertex2f(1.2, 3.8);
+	glEnd();
+
+	//Trapezio Inferior
+	glBegin(GL_POLYGON);
+	glColor3ub(105, 57, 3);
+	glVertex2f(1.5, -2);
+	glColor3ub(105, 57, 3);
+	glVertex2f(1, 0.5);
+	glColor3ub(66, 36, 3);
+	glVertex2f(-1, 0.5);
+	glColor3ub(94, 51, 3);
+	glVertex2f(-1.5,-2);
+	glEnd();
+
+
+}
 
 void Crystal() {
 
@@ -111,14 +313,14 @@ void Desenha(void)
 	// Limpa a janela e o depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Desenha o Crystal com a cor corrente (solid)
+	// Desenha as Asas
+	Asa();
+	// Desenha a Haste
+	Haste();
+	// Desenha o Crystal
 	Crystal();
 
 	glutSwapBuffers();
-}
-
-void Gema(void) {
-
 }
 
 // Inicializa parâmetros de rendering
@@ -219,7 +421,7 @@ void GerenciaMouse(int button, int state, int x, int y)
 int main(void)
 {
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(400, 350);
+	glutInitWindowSize(800, 600);
 	glutCreateWindow("Visualizacao 3D");
 	glutDisplayFunc(Desenha);
 	glutReshapeFunc(AlteraTamanhoJanela);

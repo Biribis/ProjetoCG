@@ -1,89 +1,9 @@
 #include <stdio.h>
 #include <glut.h>
 #include <math.h>
-#define CTRL_COUNT 100
 # define M_PI 3.14159265358979323846
 
-/*
-int ctrlPointsCount;
-double ctrlPointsX[CTRL_COUNT], ctrlPointsY[CTRL_COUNT];
-double X1[3] = { 0.26015037593985, 0.43609022556391, 0.6 }, Y1[3] = { 0.946875, 0.884375, 0.946875 };
-*/
-
 GLfloat angle, fAspect;
-
-/*
-
-//Função pra curvas de bezier
-float getNextBezierPointX(float t)
-{
-	float x = 0.0;
-
-	for (int i = 0; i < ctrlPointsCount; i++)
-	{
-		int c;
-		if (i == 0 || i == ctrlPointsCount - 1)
-			c = 1;
-		else
-		{
-			c = ctrlPointsCount - 1;
-		}
-		x += c * pow(t, i) * pow(1 - t, ctrlPointsCount - 1 - i) * ctrlPointsX[i];
-	}
-	return x;
-}
-float getNextBezierPointY(float t)
-{
-	float y = 0.0;
-
-	for (int i = 0; i < ctrlPointsCount; i++)
-	{
-		int c;
-		if (i == 0 || i == ctrlPointsCount - 1)
-			c = 1;
-		else
-		{
-			c = ctrlPointsCount - 1;
-		}
-		y += c * pow(t, i) * pow(1 - t, ctrlPointsCount - 1 - i) * ctrlPointsY[i];
-	}
-
-
-
-	return y;
-}
-
-//Desenha Curva de Bezier
-void drawline()
-{
-	// draw control points using red color
-	for (int i = 0; i < 3; i++)
-	{
-		glBegin(GL_POINTS);
-		glVertex2i(ctrlPointsX[i], ctrlPointsY[i]);
-		glEnd();
-		glFlush();
-	}
-	// draw bezier curve using control poitns by calculating next points using           cubic bezier curve formula
-	float oldX = ctrlPointsX[0], oldY = ctrlPointsY[0];
-	for (double t = 0.0; t <= 1.0; t += 0.01)
-	{
-		float x = getNextBezierPointX(t);
-		float y = getNextBezierPointY(t);
-		//glColor3f(1.0,t,1.0);
-		glColor3f(1.0, 1.0, 1.0);
-		glBegin(GL_LINES);
-		glVertex2f(oldX, oldY);
-		glVertex2f(x, y);
-		glEnd();
-		glFlush();
-		oldX = x;
-		oldY = y;
-	}
-}
-
-*/
-
 
 //Função auxiliar do Leonardo
 float grausParaRadianos(float angulo_graus) {
@@ -107,7 +27,7 @@ void CirculoSimetrico(float raio, float x0, float y0,float z, int definicao) {
 	for (i = 0; i < definicao; i++) {
 		x = raio * cos(angulo) + x0;
 		y = raio * sin(angulo) + y0;
-		glVertex3f(-x, y, z);
+		glVertex3f(-x, y,z);
 		angulo += passo;
 	}
 	glEnd();
@@ -132,24 +52,11 @@ void MultiplyWithOutAMP() {
 }
 */
 
-/*
-void Cria_Ranhura(float xi, float xf){
-	glBegin(GL_POLYGON);
-	float y = 0;
-	for (int i = 0; i < (xf - xi); i += 0.1) {
-		y = xi + i + (i / 2 * xi);
-		glVertex2f((xi+i), y);	
-	}
-	glEnd();
-
-}
-*/
-
 void Asa() {
 
-	glColor3ub(255,255,255);
 	glBegin(GL_POLYGON);
-	CirculoSimetrico(5, -2, 5.5,-1, 60);
+	glColor3ub(250, 219, 117);
+	CirculoSimetrico(5, -2, 5.5,-1, 32);
 	glEnd();
 
 	//recorte de seções

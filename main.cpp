@@ -9,7 +9,7 @@ GLfloat angle, fAspect;
 float grausParaRadianos(float angulo_graus) {
 	return (angulo_graus * 2 * M_PI) / 360.0;
 }
-void CirculoSimetrico(float raio, float x0, float y0,float z, int definicao) {
+void CirculoSimetrico(float raio, float x0, float y0, float z, int definicao) {
 	int i;
 	float passo = grausParaRadianos(360.0 / definicao);
 	float angulo = passo;
@@ -19,7 +19,7 @@ void CirculoSimetrico(float raio, float x0, float y0,float z, int definicao) {
 	for (i = 0; i < definicao; i++) {
 		x = raio * cos(angulo) + x0;
 		y = raio * sin(angulo) + y0;
-		glVertex3f(x, y,z);
+		glVertex3f(x, y, z);
 		angulo += passo;
 	}
 	glEnd();
@@ -27,7 +27,7 @@ void CirculoSimetrico(float raio, float x0, float y0,float z, int definicao) {
 	for (i = 0; i < definicao; i++) {
 		x = raio * cos(angulo) + x0;
 		y = raio * sin(angulo) + y0;
-		glVertex3f(-x, y,z);
+		glVertex3f(-x, y, z);
 		angulo += passo;
 	}
 	glEnd();
@@ -56,13 +56,13 @@ void Asa() {
 
 	glBegin(GL_POLYGON);
 	glColor3ub(250, 219, 117);
-	CirculoSimetrico(5, -2, 5.5,-1, 32);
+	CirculoSimetrico(5, -2, 5.5, -1, 32);
 	glEnd();
 
 	//recorte de seções
 	glBegin(GL_POLYGON);
-	glColor3ub(0,0,0);
-	CirculoSimetrico(4.5, -3, 8.5,-.5, 60);
+	glColor3ub(0, 0, 0);
+	CirculoSimetrico(4.5, -3, 8.5, -.5, 60);
 	glEnd();
 	glBegin(GL_POLYGON);
 	CirculoSimetrico(2, 0, 4.5, -.5, 60);
@@ -108,7 +108,7 @@ void Haste() {
 	glColor3ub(66, 36, 3);
 	glVertex2f(-1, 0.5);
 	glColor3ub(94, 51, 3);
-	glVertex2f(-1.5,-2);
+	glVertex2f(-1.5, -2);
 	glEnd();
 
 
@@ -210,16 +210,20 @@ void Crystal() {
 	glVertex2f(1.4, 8);
 	glVertex2f(0.7, 8.5);
 	glVertex2f(0, 8.8);
-	
+
 	glEnd();
 }
 
+float anguloR = 0;
 // Função callback chamada para fazer o desenho
 void Desenha(void)
 {
 	// Limpa a janela e o depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//Rotaciona com base no angulo definido na função timer que varia conforme passam os frames
+	glRotatef(60, 1.0, 1.0, 14.0);
+	
 	// Desenha as Asas
 	Asa();
 	// Desenha a Haste
@@ -324,6 +328,17 @@ void GerenciaMouse(int button, int state, int x, int y)
 	glutPostRedisplay();
 }
 
+// Função callback chamada pela GLUT a cada intervalo de tempo
+// (a window não está sendo redimensionada ou movida)
+void Timer(int value)
+{
+	glutPostRedisplay();
+	glutTimerFunc(33, Timer, 1);
+	anguloR += 0.001;
+	if (anguloR > 360.0) {
+		anguloR -= 360.0;
+	}
+}
 // Programa Principal
 int main(void)
 {
@@ -333,6 +348,7 @@ int main(void)
 	glutDisplayFunc(Desenha);
 	glutReshapeFunc(AlteraTamanhoJanela);
 	glutMouseFunc(GerenciaMouse);
+	glutTimerFunc(33, Timer, 1);
 	Inicializa();
 	glutMainLoop();
 }

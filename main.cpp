@@ -9,7 +9,9 @@ GLfloat angle, fAspect;
 float grausParaRadianos(float angulo_graus) {
 	return (angulo_graus * 2 * M_PI) / 360.0;
 }
-void CirculoSimetrico(float raio, float x0, float y0,float z, int definicao) {
+
+//Funcao cria circulos simetricos no eixo y
+void CirculoSimetrico(float raio, float x0, float y0, float z, int definicao,float grad) {
 	int i;
 	float passo = grausParaRadianos(360.0 / definicao);
 	float angulo = passo;
@@ -19,7 +21,10 @@ void CirculoSimetrico(float raio, float x0, float y0,float z, int definicao) {
 	for (i = 0; i < definicao; i++) {
 		x = raio * cos(angulo) + x0;
 		y = raio * sin(angulo) + y0;
-		glVertex3f(x, y,z);
+		if (grad) {
+			glColor3ub(187 - (50/y), 187 - (50 / y), 189 - (50 / y));
+		}
+		glVertex3f(x, y, (z - (angulo / 360)));
 		angulo += passo;
 	}
 	glEnd();
@@ -27,50 +32,38 @@ void CirculoSimetrico(float raio, float x0, float y0,float z, int definicao) {
 	for (i = 0; i < definicao; i++) {
 		x = raio * cos(angulo) + x0;
 		y = raio * sin(angulo) + y0;
-		glVertex3f(-x, y,z);
+		if (grad) {
+			glColor3ub(187 - (50 / y), 187 - (50 / y), 189 - (50 / y));
+		}
+		glVertex3f(-x, y,(z - (angulo/360)));
 		angulo += passo;
 	}
 	glEnd();
 }
 
-//Rotação em progresso
-/*
-void MultiplyWithOutAMP() {
-	int aMatrix[3][1] = { {1, 4}, {2, 5}, {3, 6} };
-	int bMatrix[2][3] = { {7, 8, 9}, {10, 11, 12} };
-
-	for (int row = 0; row < 3; row++) {
-		for (int col = 0; col < 3; col++) {
-			// Multiply the row of A by the column of B to get the row, column of product.
-			for (int inner = 0; inner < 2; inner++) {
-				product[row][col] += aMatrix[row][inner] * bMatrix[inner][col];
-			}
-			std::cout << product[row][col] << "  ";
-		}
-		std::cout << "\n";
-	}
-}
-*/
-
+//Cria as asas da ward
 void Asa() {
 
+	//Circulo maior
 	glBegin(GL_POLYGON);
-	glColor3ub(250, 219, 117);
-	CirculoSimetrico(5, -2, 5.5,-1, 32);
+	glColor3ub(187, 187, 189);
+	CirculoSimetrico(5, -2, 5.5, -1, 100,true);
 	glEnd();
 
 	//recorte de seções
 	glBegin(GL_POLYGON);
-	glColor3ub(0,0,0);
-	CirculoSimetrico(4.5, -3, 8.5,-.5, 60);
+	glColor3ub(0, 0, 0);
+	CirculoSimetrico(4.5, -3, 8.5, -.5, 100,false);
 	glEnd();
 	glBegin(GL_POLYGON);
-	CirculoSimetrico(2, 0, 4.5, -.5, 60);
+	CirculoSimetrico(2, 0, 4.5, -.5, 100,false);
 	glEnd();
 	glBegin(GL_POLYGON);
-	CirculoSimetrico(2, 0, 0, -.5, 60);
+	CirculoSimetrico(2, 0, 0, -.5, 100,false);
 	glEnd();
 }
+
+//Cria o cabo de madeira da ward
 void Haste() {
 
 	//Encaixe Crystal
@@ -108,12 +101,13 @@ void Haste() {
 	glColor3ub(66, 36, 3);
 	glVertex2f(-1, 0.5);
 	glColor3ub(94, 51, 3);
-	glVertex2f(-1.5,-2);
+	glVertex2f(-1.5, -2);
 	glEnd();
 
 
 }
 
+//Cria o crystal da ward
 void Crystal() {
 
 	//superior
@@ -210,7 +204,7 @@ void Crystal() {
 	glVertex2f(1.4, 8);
 	glVertex2f(0.7, 8.5);
 	glVertex2f(0, 8.8);
-	
+
 	glEnd();
 }
 
@@ -234,8 +228,8 @@ void Desenha(void)
 void Inicializa(void)
 {
 	GLfloat luzAmbiente[4] = { 0.2,0.2,0.2,1.0 };
-	GLfloat luzDifusa[4] = { 0.7,0.1,0.7,1.0 };	   // "cor" 
-	GLfloat luzEspecular[4] = { 1.0, 0.5, 1.0, 1.0 };// "brilho" 
+	GLfloat luzDifusa[4] = { 1.0,1.0,1.0,1.0 };	   // "cor" 
+	GLfloat luzEspecular[4] = { 1.0, 1.0, 1.0, 1.0 };// "brilho" 
 	GLfloat posicaoLuz[4] = { 100.0, 50.0, 50.0, 1.0 };
 
 	// Capacidade de brilho do material
@@ -271,7 +265,7 @@ void Inicializa(void)
 	// Habilita o depth-buffering
 	glEnable(GL_DEPTH_TEST);
 
-	angle = 45;
+	angle = 5;
 }
 
 // Função usada para especificar o volume de visualização
@@ -291,7 +285,7 @@ void EspecificaParametrosVisualizacao(void)
 	glLoadIdentity();
 
 	// Especifica posição do observador e do alvo
-	gluLookAt(0, 80, 200, 0, 0, 0, 0, 1, 0);
+	gluLookAt(0, 80, 200, 0, 3, 0, 0, 1, 0);
 }
 
 // Função callback chamada quando o tamanho da janela é alterado 
@@ -314,11 +308,11 @@ void GerenciaMouse(int button, int state, int x, int y)
 {
 	if (button == GLUT_LEFT_BUTTON)
 		if (state == GLUT_DOWN) {  // Zoom-in
-			if (angle >= 10) angle -= 5;
+			if (angle >= 2) angle -= 1;
 		}
 	if (button == GLUT_RIGHT_BUTTON)
 		if (state == GLUT_DOWN) {  // Zoom-out
-			if (angle <= 130) angle += 5;
+			if (angle <= 6) angle += 1;
 		}
 	EspecificaParametrosVisualizacao();
 	glutPostRedisplay();
@@ -328,7 +322,7 @@ void GerenciaMouse(int button, int state, int x, int y)
 int main(void)
 {
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(800, 600);
+	glutInitWindowSize(1920, 1080);
 	glutCreateWindow("Visualizacao 3D");
 	glutDisplayFunc(Desenha);
 	glutReshapeFunc(AlteraTamanhoJanela);

@@ -3,7 +3,8 @@
 #include <math.h>
 # define M_PI 3.14159265358979323846
 
-GLfloat angle, fAspect;
+GLfloat angle, fAspect, windowHeight, windowWidth;
+
 
 //Função auxiliar do Leonardo
 float grausParaRadianos(float angulo_graus) {
@@ -11,7 +12,7 @@ float grausParaRadianos(float angulo_graus) {
 }
 
 //Funcao cria circulos simetricos no eixo y
-void CirculoSimetrico(float raio, float x0, float y0, float z, int definicao,float grad) {
+void CirculoSimetrico(float raio, float x0, float y0, float z, int definicao, float grad) {
 	int i;
 	float passo = grausParaRadianos(360.0 / definicao);
 	float angulo = passo;
@@ -22,7 +23,7 @@ void CirculoSimetrico(float raio, float x0, float y0, float z, int definicao,flo
 		x = raio * cos(angulo) + x0;
 		y = raio * sin(angulo) + y0;
 		if (grad) {
-			glColor3ub(187 - (50/y), 187 - (50 / y), 189 - (50 / y));
+			glColor3ub(187 - (50 / y), 187 - (50 / y), 189 - (50 / y));
 		}
 		glVertex3f(x, y, (z - (angulo / 360)));
 		angulo += passo;
@@ -35,7 +36,7 @@ void CirculoSimetrico(float raio, float x0, float y0, float z, int definicao,flo
 		if (grad) {
 			glColor3ub(187 - (50 / y), 187 - (50 / y), 189 - (50 / y));
 		}
-		glVertex3f(-x, y,(z - (angulo/360)));
+		glVertex3f(-x, y, (z - (angulo / 360)));
 		angulo += passo;
 	}
 	glEnd();
@@ -47,19 +48,19 @@ void Asa() {
 	//Circulo maior
 	glBegin(GL_POLYGON);
 	glColor3ub(187, 187, 189);
-	CirculoSimetrico(5, -2, 5.5, -1, 100,true);
+	CirculoSimetrico(5, -2, 5.5, -1, 100, true);
 	glEnd();
 
 	//recorte de seções
 	glBegin(GL_POLYGON);
 	glColor3ub(0, 0, 0);
-	CirculoSimetrico(4.5, -3, 8.5, -.5, 100,false);
+	CirculoSimetrico(4.5, -3, 8.5, -.5, 100, false);
 	glEnd();
 	glBegin(GL_POLYGON);
-	CirculoSimetrico(2, 0, 4.5, -.5, 100,false);
+	CirculoSimetrico(2, 0, 4.5, -.5, 100, false);
 	glEnd();
 	glBegin(GL_POLYGON);
-	CirculoSimetrico(2, 0, 0, -.5, 100,false);
+	CirculoSimetrico(2, 0, 0, -.5, 100, false);
 	glEnd();
 }
 
@@ -208,6 +209,32 @@ void Crystal() {
 	glEnd();
 }
 
+// Função callback chamada para gerenciar eventos de teclado
+void GerenciaTeclado(unsigned char key, int x, int y)
+{
+	switch (key) {
+	case 'R':
+	case 'r':// gira
+		glRotatef(5, 0.0, 0.0, 1.0);
+		break;
+	case 'S':
+	case 's':// gira
+		glTranslatef(0, -1, 0);
+		break;
+	case 'w':// gira
+		glTranslatef(0, 1, 0);
+		break;
+	case 'a':// gira
+		glTranslatef(-1, 0, 0);
+		break;
+	case 'd':// gira
+		glTranslatef(1, 0, 0);
+	}
+
+	glutPostRedisplay();
+}
+
+
 // Função callback chamada para fazer o desenho
 void Desenha(void)
 {
@@ -318,6 +345,15 @@ void GerenciaMouse(int button, int state, int x, int y)
 	glutPostRedisplay();
 }
 
+// Função callback chamada pela GLUT a cada intervalo de tempo
+void Timer(int value)
+{
+	glutPostRedisplay();
+	glutTimerFunc(33, Timer, 1);
+	glutKeyboardFunc(GerenciaTeclado);
+	glutMouseFunc(GerenciaMouse);
+}
+
 // Programa Principal
 int main(void)
 {
@@ -326,7 +362,7 @@ int main(void)
 	glutCreateWindow("Visualizacao 3D");
 	glutDisplayFunc(Desenha);
 	glutReshapeFunc(AlteraTamanhoJanela);
-	glutMouseFunc(GerenciaMouse);
+	glutTimerFunc(33, Timer, 1);
 	Inicializa();
 	glutMainLoop();
 }

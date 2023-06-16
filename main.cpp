@@ -5,8 +5,10 @@
 
 GLfloat angle, fAspect;
 
+bool rotateD = false;
 bool even = true;
 int anglePeca = 0; // angulo que a peca forma com o eixo z
+int i = 0;
 
 //Função auxiliar do Leonardo
 float grausParaRadianos(float angulo_graus) {
@@ -322,43 +324,49 @@ void GerenciaMouse(int button, int state, int x, int y)
 	glutPostRedisplay();
 }
 
-/*Animação
-// Função callback chamada pela GLUT a cada intervalo de tempo
-void Timer(int value)
-{
+//Roda o objeto em idle
+void Rotate() {
+	glRotatef(5, 0, 0, 1);
 	glutPostRedisplay();
-	glutTimerFunc(33, Timer, 1);
+	i += 5;
+	rotateD = false;
 }
-*/
+
+//Para a rotação
+void Para() {
+	glutPostRedisplay();
+}
+
 // Função callback chamada para gerenciar eventos de teclado
 void GerenciaTeclado(unsigned char key, int x, int y)
 {
 	switch (key) {
-	case 'R':
 	case 'r':// gira
-		for (int i = 5; i < 720; i += 5) {
-			glRotatef(i, 0, 0, 1);
-			glutPostRedisplay();
-		}
+	case 'R':
+		rotateD =  true;
+		glutIdleFunc(rotateD ? Rotate : NULL);
+		break;
+	case 'p'://para de girar
+		glutIdleFunc(rotateD ? Para : NULL);
 		break;
 	case 'S':
-	case 's':// gira
+	case 's':// decresce o eixo y em 1 unidade
 		glTranslatef(0, -1, 0);
 		glutPostRedisplay();
 		break;
-	case 'w':// gira
+	case 'w':// acresce o eixo y de 1 unidade
 		glTranslatef(0, 1, 0);
 		glutPostRedisplay();
 		break;
-	case 'a':// gira
+	case 'a':// decresce o eixo x em 1 unidade
 		glTranslatef(-1, 0, 0);
 		glutPostRedisplay();
 		break;
-	case 'd':// gira
+	case 'd':// acresce o eixo x de 1 unidade
 		glTranslatef(1, 0, 0);
 		glutPostRedisplay();
 		break;
-	case 'i':
+	case 'i'://gira no eixo y
 		if (anglePeca <= 90) {
 			glRotatef(5, 0, 1, 0);
 			glutPostRedisplay();
